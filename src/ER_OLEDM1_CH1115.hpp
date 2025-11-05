@@ -9,7 +9,7 @@
 #define _ER_OLEDM1_CH1115_H_
 #include "Adafruit_GFX.h"
 
-// ** INCLUDES **
+ // ** INCLUDES **
 #if (ARDUINO >=100)
   #include "Arduino.h"
 #else
@@ -21,7 +21,7 @@
 // ** DEFINES **
 
 // Display Pixel colours  definition
-#define OLED_WHITE  0
+#define OLED_WHITE 0
 #define OLED_BLACK 1
 #define OLED_INVERSE 2
 
@@ -166,7 +166,7 @@ class ERMCH1115 : public Adafruit_GFX  {
 	ERMCH1115(int16_t oledwidth , int16_t oledheight, int8_t cd, int8_t rst, int8_t cs);
 
 	~ERMCH1115(){};
-	
+
     void drawPixel(int16_t x, int16_t y, uint16_t colour) override;
 	void OLEDupdate(void);
 	void OLEDclearBuffer(void);
@@ -195,6 +195,9 @@ class ERMCH1115 : public Adafruit_GFX  {
 	
 	ERMCH1115_SharedBuffer* ActiveBufferPtr=nullptr; /**< Active buffer pointer , a pointer to which shared buffer object */
 
+    void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color) override;
+    void drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color) override;
+
   private:
 
 	void send_data(uint8_t data);
@@ -215,6 +218,8 @@ class ERMCH1115 : public Adafruit_GFX  {
 	 uint8_t _WidthScreen = 128; /**< Width of screen in pixels */
 	 uint8_t _HeightScreen = 64;  /**< Height of screen in pixels */
 
+    void drawFastHLineInternal(int16_t x, int16_t y, int16_t w, uint16_t color);
+    void drawFastVLineInternal(int16_t x, int16_t __y,int16_t __h, uint16_t color);
 }; 
 
 #endif // end of guard header
