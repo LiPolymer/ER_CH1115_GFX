@@ -1,12 +1,13 @@
  /*!
 	@file ER_OLEDM1_CH1115.hpp
-	@brief ER_OLEDM1 OLED driven by CH1115 controller header file
-	Project Name: ER_OLEDM1_CH1115 , URL: https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115
-	@author  Gavin Lyons
+	@brief ER_OLEDM1 OLED driven by CH1115 controller header file using AdafruitGFX
+	Project Name: ER_CH1115_GFX , URL: https://github.com/gavinlyonsrepo/ER_OLEDM1_CH1115
+	@author  Gavin Lyons, LiPolymer
 */
 
 #ifndef  _ER_OLEDM1_CH1115_H_
 #define _ER_OLEDM1_CH1115_H_
+#include "Adafruit_GFX.h"
 
 // ** INCLUDES **
 #if (ARDUINO >=100)
@@ -16,7 +17,6 @@
 #endif
 
 #include <SPI.h>
-#include "ER_OLEDM1_CH1115_graphics.hpp"
 
 // ** DEFINES **
 
@@ -115,6 +115,31 @@
 	#define SPI_TRANSACTION_END  // Blank
 #endif
 
+//enums from original graphic class
+
+enum CH1115_Return_Codes_e : uint8_t
+{
+    CH1115_Success = 0,                /**< Success!  */
+    CH1115_WrongFont = 2,              /**< Wrong Font selected for this method , There are two families of font included with different overloaded functions*/
+    CH1115_CharScreenBounds = 3,       /**< Text Character is out of Screen bounds, Check x and y*/
+    CH1115_CharFontASCIIRange = 4,     /**< Text Character is outside of chosen Fonts ASCII range, Check the selected Fonts ASCII range.*/
+    CH1115_CharArrayNullptr = 5,       /**< Text Character Array is an invalid pointer object */
+    CH1115_BitmapNullptr = 7,          /**< The Bitmap data array is an invalid pointer object */
+    CH1115_BitmapScreenBounds = 8,     /**< The bitmap starting point is outside screen bounds check x and y */
+    CH1115_BitmapLargerThanScreen = 9, /**< The Bitmap is larger than screen , check  w and h*/
+    CH1115_BitmapVerticalSize = 10,    /**< A vertical  Bitmap's height must be divisible by 8. */
+    CH1115_BitmapHorizontalSize = 11,  /**< A horizontal Bitmap's width  must be divisible by 8  */
+};
+
+/*! OLED rotate modes in degrees, Note this is separate from OLED command method for rotation. */
+enum  CH1115_rotate_e : uint8_t
+{
+    CH1115_Degrees_0 = 0, /**< No rotation 0 degrees*/
+    CH1115_Degrees_90,    /**< Rotation 90 degrees*/
+    CH1115_Degrees_180,   /**< Rotation 180 degrees*/
+    CH1115_Degrees_270   /**< Rotation 270 degrees*/
+};
+
 
 // ** CLASS SECTION **
 
@@ -135,14 +160,14 @@ class  ERMCH1115_SharedBuffer
 };
 
 /*! @brief class to drive the ERMCh1115 OLED */
-class ERMCH1115 : public ERMCH1115_graphics  {
+class ERMCH1115 : public Adafruit_GFX  {
   public:
 	ERMCH1115(int16_t oledwidth , int16_t oledheight, int8_t cd, int8_t rst, int8_t cs, int8_t sclk, int8_t din);
 	ERMCH1115(int16_t oledwidth , int16_t oledheight, int8_t cd, int8_t rst, int8_t cs);
 
 	~ERMCH1115(){};
 	
-		virtual void drawPixel(int16_t x, int16_t y, uint8_t colour) override;
+    void drawPixel(int16_t x, int16_t y, uint16_t colour) override;
 	void OLEDupdate(void);
 	void OLEDclearBuffer(void);
 	void OLEDBuffer(int16_t x, int16_t y, uint8_t w, uint8_t h, uint8_t* data);
@@ -154,7 +179,6 @@ class ERMCH1115 : public ERMCH1115_graphics  {
 	void OLEDFillScreen(uint8_t pixel, uint8_t mircodelay);
 	void OLEDFillPage(uint8_t page_num, uint8_t pixels,uint8_t delay);
 	CH1115_Return_Codes_e OLEDBitmap(int16_t x, int16_t y, uint8_t w, uint8_t h, const uint8_t* data);
-	
 	void OLEDEnable(uint8_t on);
 	void OLEDInvert(uint8_t on);
 	void OLEDFlip(uint8_t on);

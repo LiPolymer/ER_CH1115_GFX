@@ -35,7 +35,7 @@ ERMCH1115_SharedBuffer::ERMCH1115_SharedBuffer(uint8_t* mybuffer, uint8_t w,  ui
 	@param cs GPIO Chip select
 	@note Hardware SPI version
  */
-ERMCH1115  :: ERMCH1115(int16_t oledwidth , int16_t oledheight, int8_t cd, int8_t rst, int8_t cs) :ERMCH1115_graphics(oledwidth , oledheight)
+ERMCH1115  :: ERMCH1115(int16_t oledwidth , int16_t oledheight, int8_t cd, int8_t rst, int8_t cs) :Adafruit_GFX(oledwidth , oledheight)
 {
 	_OLED_CD = cd;
 	_OLED_RST= rst;
@@ -56,7 +56,7 @@ ERMCH1115  :: ERMCH1115(int16_t oledwidth , int16_t oledheight, int8_t cd, int8_
 	@param din GPIO MOSI
 	@note software SPI version
  */
-ERMCH1115  :: ERMCH1115(int16_t oledwidth , int16_t oledheight, int8_t cd, int8_t rst, int8_t cs, int8_t sclk, int8_t din) :  ERMCH1115_graphics(oledwidth ,  oledheight)
+ERMCH1115  :: ERMCH1115(int16_t oledwidth , int16_t oledheight, int8_t cd, int8_t rst, int8_t cs, int8_t sclk, int8_t din) :  Adafruit_GFX(oledwidth ,  oledheight)
 {
 	_OLED_CD = cd;
 	_OLED_RST= rst;
@@ -154,6 +154,8 @@ void ERMCH1115::OLEDinit()
 
 	send_command(ERMCH1115_DC_MODE_SET, 0);
 	send_command(ERMCH1115_DC_ONOFF_SET, 0);
+
+    send_command(ERMCH1115_DISPLAY_INVERT, 0);
 
 	send_command(ERMCH1115_DISPLAY_ON, 0);
 	_sleep= false;
@@ -670,7 +672,7 @@ void ERMCH1115::OLEDBuffer(int16_t x, int16_t y, uint8_t w, uint8_t h, uint8_t* 
 	@param y y co-ord of pixel
 	@param colour colour of  pixel
 */
-void ERMCH1115::drawPixel(int16_t x, int16_t y, uint8_t colour)
+void ERMCH1115::drawPixel(int16_t x, int16_t y, uint16_t colour)
 {
 	// Boundary Scan for active buffer 
 	//if ((x < 0) || (x >= this->ActiveBufferPtr->width) || (y < 0) || (y >= this->ActiveBufferPtr->height) )
